@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Base NFT Minter</title>
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.8.2/dist/web3.min.js"></script>
+</head>
+<body>
+    <h1>Base NFT Minter</h1>
+    <p>Mint an NFT for 0.00000001 ETH!</p>
+    <button onclick="mintNFT()">Mint NFT</button>
+    <p id="result"></p>
+
+    <script>
+        async function mintNFT() {
+            if (typeof window.ethereum !== 'undefined') {
+                const result = document.getElementById("result");
+                result.innerText = "Connecting to MetaMask...";
+
+                try {
+                    // Request account access
+                    const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                    const web3 = new Web3(window.ethereum);
+
+                    // Contract details (replace with your deployed address and ABI)
+                    const contractAddress = 'YOUR_CONTRACT_ADDRESS'; // e.g., '0xYourAddress'
+                    const abi = [
+                        {
+                            "inputs": [],
+                            "name": "mintNFT",
+                            "outputs": [],
+                            "stateMutability": "payable",
+                            "type": "function"
+                        }
+                    ]; // Minimal ABI—expand with full ABI from Remix if needed
+
+                    const contract = new web3.eth.Contract(abi, contractAddress);
+
+                    // Send transaction
+                    const tx = await contract.methods.mintNFT().send({
+                        from: accounts[0],
+                        value: web3.utils.toWei('0.00000001', 'ether')
+                    });
+                    result.innerText = `NFT Minted! Transaction Hash: ${tx.transactionHash}`;
+                } catch (error) {
+                    result.innerText = `Error: ${error.message}`;
+                }
+            } else {
+                result.innerText = "Please install MetaMask!";
+            }
+        }
+    </script>
+</body>
+</html>

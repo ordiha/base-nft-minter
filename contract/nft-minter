@@ -1,0 +1,16 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.20;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+
+contract BaseNFTMinter is ERC721 {
+    uint256 public tokenId;
+
+    constructor() ERC721("BaseNFT", "BNFT") {}
+
+    function mintNFT() external payable {
+        require(msg.value >= 0.0001 ether, "Insufficient payment");
+        tokenId++;
+        _safeMint(msg.sender, tokenId);
+    }
+}
